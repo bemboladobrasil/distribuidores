@@ -125,11 +125,8 @@ footer{ color: var(--muted); font-size:12px; padding: 10px 20px 24px; text-align
 <footer>© Bem Bolado</footer>
 
 <script>
-/* ========= CONFIG ========= */
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuyvyfHntOVoDyZe-xDOKeWTMb3hXGpnIoXk_tNozCAFNk94nbtvnxe-P6OMr5q4pyaewEhFoxHOqH/pub?output=csv
-"; //
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuyvyfHntOVoDyZe-xDOKeWTMb3hXGpnIoXk_tNozCAFNk94nbtvnxe-P6OMr5q4pyaewEhFoxHOqH/pub?output=csv";
 
-/* ========= UTIL ========= */
 const $q = document.getElementById("q");
 const $uf = document.getElementById("uf");
 const $grid = document.getElementById("grid");
@@ -165,7 +162,6 @@ function csvToObjects(csv){
   });
 }
 
-/* ========= DATA CARREGAMENTO ========= */
 let DATA = [];
 
 async function loadCSV(){
@@ -195,16 +191,14 @@ async function loadCSV(){
   }
 }
 
-/* ========= FILTROS ========= */
 function rebuildUFOptions(){
   const ufs = [...new Set(DATA.map(r => (r.UF||"").trim()).filter(Boolean))].sort();
-  $uf.innerHTML = '<option value="">Todos os estados</option>' +
+  $uf.innerHTML = '<option value=\"\">Todos os estados</option>' +
     ufs.map(uf => `<option value="${uf}">${uf}</option>`).join('');
 }
 $uf.onchange = () => render();
 $q.oninput = () => render();
 
-/* ========= RENDER ========= */
 function matchText(r, q){
   if(!q) return true;
   const hay = [
@@ -240,21 +234,13 @@ function buildCard(r){
 function render(){
   const q = $q.value.trim();
   const ufSel = $uf.value || "";
-
-  const list = DATA
-    .filter(r => (!ufSel || r.UF === ufSel) && matchText(r, q));
-
+  const list = DATA.filter(r => (!ufSel || r.UF === ufSel) && matchText(r, q));
   $resultCount.textContent = `${list.length} resultado${list.length===1?"":"s"}`;
-
-  if(!list.length){
-    $grid.innerHTML = `<div class="wrap" style="grid-column:1/-1; text-align:center; color:#888;">Nenhum distribuidor encontrado.</div>`;
-    return;
-  }
-
-  $grid.innerHTML = list.map(buildCard).join("");
+  $grid.innerHTML = list.length
+    ? list.map(buildCard).join("")
+    : `<div class="wrap" style="grid-column:1/-1; text-align:center; color:#888;">Nenhum distribuidor encontrado.</div>`;
 }
 
-/* start */
 loadCSV();
 </script>
 </body>
