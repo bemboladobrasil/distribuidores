@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Distribuidores · Bem Bolado</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #171a21;
+    --text: #e7e9ee;
+    --muted: #9aa1ac;
+    --accent: #21c08b;
+    --border: #2a2f3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(8px);
+    background: rgba(15,17,21,0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 20px; }
+  h1 { margin: 4px 0 8px; font-size: 20px; letter-spacing: .3px; }
+  .controls {
+    display: grid; gap: 10px; grid-template-columns: 1fr 1fr 1fr auto;
+  }
+  .controls input, .controls select {
+    width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text);
+    outline: none;
+  }
+  .controls button {
+    padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer;
+  }
+  .controls button:hover { border-color: var(--accent); }
+  main .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; padding: 18px 20px;
+  }
+  .card {
+    border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(180deg, #151922, #12151c);
+    padding: 14px;
+  }
+  .uf-pill {
+    display:inline-block; font-size:12px; color:#fff; background: var(--accent); padding: 2px 8px; border-radius: 999px; margin-bottom: 8px;
+  }
+  .empresa { font-weight: 700; font-size: 16px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 2px 0 8px; }
+  .area { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .actions { display:flex; flex-wrap: wrap; gap:8px; margin-top: 10px; }
+  .btn {
+    border: 1px solid var(--border); background: #10131a; color: var(--text); padding: 8px 10px; border-radius: 10px; font-size: 13px; text-decoration: none;
+  }
+  .btn:hover { border-color: var(--accent); }
+  footer { color: var(--muted); font-size: 12px; padding: 10px 20px 24px; text-align: center; }
+  @media print {
+    header, .controls, footer { display:none; }
+    body { background: #fff; color:#000; }
+    .card { break-inside: avoid; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Distribuidores · Bem Bolado</h1>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Buscar por nome, cidade, contato..." />
+      <select id="uf"></select>
+      <select id="secao"></select>
+      <button id="btnPrint">Imprimir / Salvar PDF</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div id="resultCount" class="sub"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>
+  Atualize os dados substituindo o arquivo JSON embutido neste HTML. Versão gerada automaticamente.
+</footer>
+
+<script>
+const DATA = [{"UF": "AC", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "AC", "SECAO": "", "REPRESENTANTE": "Distribuidora Barroso", "NOME": "Icaro", "TELEFONE": "(92) 99198-9348", "WHATSAPP": "", "EMAIL": "icarocosta72@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado de AM"}, {"UF": "AL", "SECAO": "", "REPRESENTANTE": "Dapal Distribuidora", "NOME": "Edilson", "TELEFONE": "(82) 99976-9966", "WHATSAPP": "", "EMAIL": "costa.irmaos@yahoo.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado AL"}, {"UF": "AM", "SECAO": "", "REPRESENTANTE": "Distribuidora Barroso", "NOME": "Icaro", "TELEFONE": "(92) 99198-9348", "WHATSAPP": "", "EMAIL": "icarocosta72@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado de AM"}, {"UF": "AP", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "AP", "SECAO": "", "REPRESENTANTE": "Distribuidora Barroso", "NOME": "Icaro", "TELEFONE": "(92) 99198-9348", "WHATSAPP": "", "EMAIL": "icarocosta72@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado de AM"}, {"UF": "BA", "SECAO": "", "REPRESENTANTE": "Rogerio Matos", "NOME": "Rogerio Matos", "TELEFONE": "(73) 99133-3596", "WHATSAPP": "", "EMAIL": "rogeriomatosprodutor@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Sul da Bahia/Divisa com ES/Chapada da Diamantina"}, {"UF": "BA", "SECAO": "", "REPRESENTANTE": "MWA", "NOME": "Marcos", "TELEFONE": "(71) 3231-7486", "WHATSAPP": "", "EMAIL": "inovarcompras@yahoo.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Salvador - Norte e Nordeste do estado"}, {"UF": "BA", "SECAO": "", "REPRESENTANTE": "Smart Distribuidora", "NOME": "Diogo", "TELEFONE": "(71) 99256-5955", "WHATSAPP": "", "EMAIL": "diogo.moreira@smartdistribuidora.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado BA"}, {"UF": "CE", "SECAO": "", "REPRESENTANTE": "Felipe Fontenele", "NOME": "Felipe", "TELEFONE": "(85) 98170-3464", "WHATSAPP": "", "EMAIL": "fontenele.felipe@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado CE/RN"}, {"UF": "CE", "SECAO": "", "REPRESENTANTE": "Martins & Lopes", "NOME": "Nonato", "TELEFONE": "(86) 3213-1898 / (86) 99951-0077", "WHATSAPP": "", "EMAIL": "nonatothe15@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado CE"}, {"UF": "CE", "SECAO": "", "REPRESENTANTE": "Comercial Serrano", "NOME": "Davi", "TELEFONE": "(85) 98185-5010", "WHATSAPP": "", "EMAIL": "comercialserrano@live.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Fortaleza e Regiao Metropolitana"}, {"UF": "DF", "SECAO": "", "REPRESENTANTE": "Atacadao", "NOME": "Renato Leite", "TELEFONE": "(61) 3042-2624", "WHATSAPP": "", "EMAIL": "renatonleite@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Todo DF"}, {"UF": "ES", "SECAO": "", "REPRESENTANTE": "Fumos Nogueira", "NOME": "Amarildo", "TELEFONE": "(27) 99225-8845", "WHATSAPP": "", "EMAIL": "gramlik@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado ES"}, {"UF": "ES", "SECAO": "", "REPRESENTANTE": "Distribuidora Cobata", "NOME": "Fabio", "TELEFONE": "(27) 3216-2725 / (27) 98817-6360", "WHATSAPP": "", "EMAIL": "fabio.borem@distribuidoracobata.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado ES"}, {"UF": "ES", "SECAO": "", "REPRESENTANTE": "Distribuidora Price", "NOME": "Eduardo", "TELEFONE": "(27) 3376-4200 / (27) 99225-8825", "WHATSAPP": "", "EMAIL": "eduardoribeiro@pricedistribuidora.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado ES"}, {"UF": "GO", "SECAO": "", "REPRESENTANTE": "Distribuidora Coringa", "NOME": "Paulo", "TELEFONE": "(62) 99282-7578", "WHATSAPP": "", "EMAIL": "distribuidoracoringa@bol.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado GO"}, {"UF": "GO", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "MA", "SECAO": "", "REPRESENTANTE": "Big Joe Atacadista", "NOME": "Araujo", "TELEFONE": "(98) 98171-1288", "WHATSAPP": "", "EMAIL": "araujoneto@bigjoetabacaria.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado MA"}, {"UF": "MA", "SECAO": "", "REPRESENTANTE": "Hot Bel Distribuidora", "NOME": "Tiago", "TELEFONE": "(99) 98125-2020", "WHATSAPP": "", "EMAIL": "thiago.maia@hotbel.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado MA"}, {"UF": "MA", "SECAO": "", "REPRESENTANTE": "Distribuidora Campos", "NOME": "Carlos Eduardo Campos", "TELEFONE": "(98) 8838-9042 / (98) 98111-8213", "WHATSAPP": "", "EMAIL": "eduardo.paratudo@gmail.com / dfistribuidora.camposcecc@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado MA"}, {"UF": "MG", "SECAO": "", "REPRESENTANTE": "Price Distribuidora", "NOME": "Luciano", "TELEFONE": "(31) 98344-5363", "WHATSAPP": "", "EMAIL": "lucianosantos@pricedistribuidora.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado MG"}, {"UF": "MG", "SECAO": "", "REPRESENTANTE": "Estanco", "NOME": "Rodrigo", "TELEFONE": "(35) 98805-3413", "WHATSAPP": "", "EMAIL": "palazzotabacum@outlook.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Sul de MG e Vale do Paraiba"}, {"UF": "MG", "SECAO": "", "REPRESENTANTE": "La Distribuidora", "NOME": "Patrick", "TELEFONE": "(34) 3322-8577", "WHATSAPP": "", "EMAIL": "ladistribuidora.ura@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Triangulo Mineiro"}, {"UF": "MT", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "MS", "SECAO": "", "REPRESENTANTE": "Dicicampo Distribuidora", "NOME": "Vera", "TELEFONE": "(67) 3382-1684", "WHATSAPP": "", "EMAIL": "dicicampo@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado MS"}, {"UF": "PB", "SECAO": "", "REPRESENTANTE": "Sedas JP", "NOME": "Paulo", "TELEFONE": "(83) 98864-3611", "WHATSAPP": "", "EMAIL": "sedasjp@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Paraiba"}, {"UF": "PA", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "PA", "SECAO": "", "REPRESENTANTE": "Distribuidora Barroso", "NOME": "Icaro", "TELEFONE": "(92) 99198-9348", "WHATSAPP": "", "EMAIL": "icarocosta72@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado de AM"}, {"UF": "PE", "SECAO": "", "REPRESENTANTE": "F.O.V Distribuidora", "NOME": "Fernando / Solon", "TELEFONE": "(81) 99898-5065 / (81) 99647-0663", "WHATSAPP": "", "EMAIL": "fovdistribuidora@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Regiao metropolitana: Recife/Jaboatao/Olinda ao agreste"}, {"UF": "PE", "SECAO": "", "REPRESENTANTE": "TBLL Tabacaria", "NOME": "Eliel", "TELEFONE": "(81) 98544-9425", "WHATSAPP": "", "EMAIL": "eliel_750@hotmail.com / tblltabacaria@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado PE"}, {"UF": "PI", "SECAO": "", "REPRESENTANTE": "Express Distribuidora", "NOME": "Fabricio", "TELEFONE": "(86) 99548-9461", "WHATSAPP": "", "EMAIL": "tabacariaexpresspi@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "PI/CE"}, {"UF": "PI", "SECAO": "", "REPRESENTANTE": "Distral", "NOME": "Pedro", "TELEFONE": "(86) 3213-1898", "WHATSAPP": "", "EMAIL": "distralteresina@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado PI"}, {"UF": "PI", "SECAO": "", "REPRESENTANTE": "Brilhante Distribuidora", "NOME": "Romulo", "TELEFONE": "(86) 9 9416-5847", "WHATSAPP": "", "EMAIL": "rbrilhante@brilhantesolucoes.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado PI"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Brovalle Distribuidora", "NOME": "Neiva Thome", "TELEFONE": "(41) 99198-4006", "WHATSAPP": "", "EMAIL": "neivathome@yahoo.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Curitiba e Regiao Metropolitana"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Charutaria Curitiba", "NOME": "Marcia", "TELEFONE": "(41) 3344-4760", "WHATSAPP": "", "EMAIL": "financeiro@charutariacuritiba.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado PR"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Diciplan", "NOME": "Ronaldo", "TELEFONE": "(45) 3225-2363 / (45) 99134-1819", "WHATSAPP": "", "EMAIL": "diciplan@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Londrina e Sudoeste do PR"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Eagle Distribuidora", "NOME": "Marcos", "TELEFONE": "(41) 98701-6417 / (41) 3319-9044", "WHATSAPP": "", "EMAIL": "marcoscarvalho@eagledistribuidora.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Curitiba e Regiao Metropolitana"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Distribuidora Sanros", "NOME": "Bruno", "TELEFONE": "(43) 98806-8198", "WHATSAPP": "", "EMAIL": "santostabacaria@uol.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Apucarana e Regiao"}, {"UF": "PR", "SECAO": "PARANA", "REPRESENTANTE": "Distribuidora Big Boss", "NOME": "Dicley", "TELEFONE": "(45) 99916-8587", "WHATSAPP": "", "EMAIL": "vendas@bigbossdistribuidora.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Cascavel e Regiao"}, {"UF": "RJ", "SECAO": "", "REPRESENTANTE": "Abreu Distribuidora", "NOME": "Cristiano Abreu", "TELEFONE": "(21) 2577-6021/ (21) 96525-2859", "WHATSAPP": "", "EMAIL": "abreudistribuidora@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado RJ"}, {"UF": "RJ", "SECAO": "", "REPRESENTANTE": "Jacare Azul", "NOME": "Iuri", "TELEFONE": "(21)2232-8208", "WHATSAPP": "", "EMAIL": "iuri@jacareazul.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "RJ", "SECAO": "", "REPRESENTANTE": "Gudan Brasil", "NOME": "Leandro", "TELEFONE": "(21) 96515-0592", "WHATSAPP": "", "EMAIL": "comercial@gudangbrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Eatado do RJ"}, {"UF": "RN", "SECAO": "", "REPRESENTANTE": "C E de Castro Comercio", "NOME": "Carlos ou Patricia", "TELEFONE": "(84) 98149-9151", "WHATSAPP": "", "EMAIL": "carloseduardo_castro@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado do RN"}, {"UF": "RN", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "RS", "SECAO": "", "REPRESENTANTE": "Mahalo Distribuidora", "NOME": "Marcio", "TELEFONE": "(51) 99406-7048", "WHATSAPP": "", "EMAIL": "mahalo.tabacaria@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Porto Alegre e metropolitana"}, {"UF": "RS", "SECAO": "", "REPRESENTANTE": "Grupo Sul Distribuidora", "NOME": "Carine", "TELEFONE": "(54) 3211-4355", "WHATSAPP": "", "EMAIL": "vendas@gdsul.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Caxias do Sul e Regao, Passo Fundo e Regiao, Ijui e Regiao, Santa Cruz do Sul e Regiao, Lageado e Regiao"}, {"UF": "RS", "SECAO": "", "REPRESENTANTE": "Flamarsul", "NOME": "Andre", "TELEFONE": "(51) 3470-5303", "WHATSAPP": "", "EMAIL": "flamarsul@flamarsul.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Cachoeirinha, Gravatai, Viamao, Novo Hamburgo, Sao Leopoldo, Alvorada, Guaiba,Litoral norte"}, {"UF": "RS", "SECAO": "", "REPRESENTANTE": "Unisul", "NOME": "Henrique", "TELEFONE": "(53) 3223-1516", "WHATSAPP": "", "EMAIL": "gerente@unisultabacos.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Pelotas, Bage, Chui, Cachoeira do Sul, Rio Grande, Camaqua,Barra do Ribeiro"}, {"UF": "RS", "SECAO": "", "REPRESENTANTE": "Ambrai", "NOME": "Nivia", "TELEFONE": "(55) 3211-4211", "WHATSAPP": "", "EMAIL": "ambrai@ambrai.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Santa Maria e Regiao, Uruguaiana, Santana do Livramento, Itaqui, Fronteira oeste"}, {"UF": "SC", "SECAO": "", "REPRESENTANTE": "Mr Bob", "NOME": "Philippe", "TELEFONE": "(47) 3288-1329 / (47) 99641-5517", "WHATSAPP": "", "EMAIL": "philippe@mrbobtabacaria.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado de SC"}, {"UF": "SE", "SECAO": "", "REPRESENTANTE": "Distribuidora DISEDA", "NOME": "Luciano", "TELEFONE": "(79) 98813-4733", "WHATSAPP": "", "EMAIL": "funildevenda@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado SE"}, {"UF": "SE", "SECAO": "", "REPRESENTANTE": "Invicta Distribuidora", "NOME": "Fernando", "TELEFONE": "(79) 99969-2625", "WHATSAPP": "", "EMAIL": "fernandowilliam@gmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Estado SE"}, {"UF": "TO", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Santa Erva", "NOME": "Eduardo", "TELEFONE": "(11) 99969-7520", "WHATSAPP": "", "EMAIL": "contato@santaervabrasil.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Villa's", "NOME": "Geral", "TELEFONE": "(11) 3227-6822", "WHATSAPP": "", "EMAIL": "comercial@villasdistribuidora.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Risson", "NOME": "Cida", "TELEFONE": "(11) 3658-5061", "WHATSAPP": "", "EMAIL": "comercialrisson@terra.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Capital e Interior SP"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Cifal", "NOME": "Gustavo", "TELEFONE": "(17) 3345-9595", "WHATSAPP": "", "EMAIL": "vendas@cifaldistribuidora.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Flexci Distribuidora", "NOME": "Luciano", "TELEFONE": "(19) 99102-9050", "WHATSAPP": "", "EMAIL": "lu.maganha@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Campinas, Americana, Rio Claro, Leme, Piracicaba, Araras"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "RR Distribuidora", "NOME": "Roberto", "TELEFONE": "(11) 94793-1011", "WHATSAPP": "", "EMAIL": "rrcomercial10@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Capital e Municipios Limitrofes SP"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Marick", "NOME": "Marcus", "TELEFONE": "(11) 2777-3050 / (11) 2777-3060", "WHATSAPP": "", "EMAIL": "atendimento@marickdistribuidora.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Sao Paulo capital"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Mukesh", "NOME": "Sunil", "TELEFONE": "(11) 3228-4874", "WHATSAPP": "", "EMAIL": "nks.charutaria@yahoo.com.br", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Territorio Nacional"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Flexci Distribuidora", "NOME": "Cleiton", "TELEFONE": "(19) 98172-1140", "WHATSAPP": "", "EMAIL": "cleitonpf@hotmail.com'", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Interior de SP"}, {"UF": "SP", "SECAO": "", "REPRESENTANTE": "Estanco", "NOME": "Rodrigo", "TELEFONE": "(35) 8805-3413", "WHATSAPP": "", "EMAIL": "palazzotabacum@outlook.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Vale do Paraiba"}, {"UF": "SP", "SECAO": "Sao Paulo - Litoral", "REPRESENTANTE": "Farah", "NOME": "Farah", "TELEFONE": "(11) 99745-7700", "WHATSAPP": "", "EMAIL": "farahissafarah@hotmail.com", "INSTAGRAM": "", "AREA_ATENDIMENTO": "Litoral norte SP / Sul do Rio"}];
+
+function onlyDigits(s) {
+  return (s||"").replace(/\D+/g, "");
+}
+function splitMulti(s) {
+  if (!s) return [];
+  return String(s).split(/\s*[\/|,;]\s*/).map(x => x.trim()).filter(Boolean);
+}
+function unique(arr) { return [...new Set(arr)]; }
+
+const $q = document.getElementById("q");
+const $uf = document.getElementById("uf");
+const $secao = document.getElementById("secao");
+const $grid = document.getElementById("grid");
+const $resultCount = document.getElementById("resultCount");
+document.getElementById("btnPrint").onclick = () => window.print();
+
+// Build UF options
+const allUFs = unique(DATA.map(r => r.UF).filter(Boolean)).sort();
+$uf.innerHTML = '<option value="">Todos os estados</option>' + allUFs.map(uf => `<option value="${uf}">${uf}</option>`).join("");
+
+// Build Seção options (depends on UF)
+function rebuildSecaoOptions() {
+  const uf = $uf.value;
+  const secoes = unique(DATA.filter(r => !uf || r.UF===uf).map(r => r.SECAO || "").filter(Boolean)).sort();
+  $secao.innerHTML = '<option value="">Todas as seções</option>' + secoes.map(s => `<option>${s}</option>`).join("");
+}
+$uf.onchange = () => { rebuildSecaoOptions(); render(); };
+$secao.onchange = () => render();
+$q.oninput = () => render();
+
+function buildCard(r) {
+  const empresa = r.REPRESENTANTE || r.NOME || "(sem nome)";
+  const cidade = r.CIDADE || "";
+  const contato = r.NOME || "";
+  const telList = splitMulti(r.TELEFONE);
+  const whatsList = splitMulti(r.WHATSAPP);
+  const email = (r.EMAIL || "").trim();
+  const insta = (r.INSTAGRAM || "").trim();
+  const area = (r.AREA_ATENDIMENTO || "").trim();
+
+  const btns = [];
+  telList.forEach(t => {
+    const d = onlyDigits(t);
+    if (d) btns.push(`<a class="btn" href="tel:${d}">Ligar ${t}</a>`);
+  });
+  whatsList.forEach(w => {
+    const d = onlyDigits(w);
+    if (d) btns.push(`<a class="btn" target="_blank" href="https://wa.me/55${d}">WhatsApp</a>`);
+  });
+  if (email) btns.push(`<a class="btn" href="mailto:${email}">E-mail</a>`);
+  if (insta) {
+    const url = insta.startsWith("http") ? insta : `https://instagram.com/${insta.replace(/^@/,"")}`;
+    btns.push(`<a class="btn" target="_blank" href="${url}">Instagram</a>`);
+  }
+
+  return `
+    <div class="card">
+      <div class="uf-pill">${r.UF}</div>
+      <div class="empresa">${empresa}</div>
+      <div class="sub">${contato ? "Contato: "+contato+" · " : ""}${cidade || ""}${r.SECAO ? " · "+r.SECAO : ""}</div>
+      ${ area ? `<div class="area"><strong>Área de atendimento:</strong> ${area}</div>` : "" }
+      <div class="actions">${btns.join(" ")}</div>
+    </div>
+  `;
+}
+
+function render() {
+  const uf = $uf.value.trim();
+  const secao = $secao.value.trim();
+  const q = ($q.value || "").toLowerCase();
+
+  let rows = DATA.filter(r => (!uf || r.UF===uf) && (!secao || (r.SECAO||"")===secao));
+  if (q) {
+    rows = rows.filter(r => {
+      const blob = (r.REPRESENTANTE + " " + r.NOME + " " + (r.CIDADE||"") + " " + (r.EMAIL||"") + " " + (r.INSTAGRAM||"") + " " + (r.AREA_ATENDIMENTO||"")).toLowerCase();
+      return blob.includes(q);
+    });
+  }
+  $resultCount.textContent = rows.length + " resultado" + (rows.length===1 ? "" : "s");
+  $grid.innerHTML = rows.map(buildCard).join("");
+}
+
+rebuildSecaoOptions();
+render();
+</script>
+</body>
+</html>
