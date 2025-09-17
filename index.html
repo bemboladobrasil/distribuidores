@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Distribuidores · Bem Bolado</title>
+<meta name="color-scheme" content="light only">
 <style>
- :root{
+:root{
   --bg:#f8f8fb;
   --card:#ffffff;
   --text:#2b124a;
@@ -14,7 +15,6 @@
   --accent-strong:#5f2fd1;
   --border:#e7e7ef;
 }
-
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
@@ -23,6 +23,7 @@ body{
   color: var(--text);
 }
 
+/* Header */
 header{
   position: sticky; top: 0; z-index: 10;
   background: var(--accent);
@@ -32,30 +33,36 @@ header{
 .wrap{ max-width:1100px; margin:0 auto; padding:16px 20px; }
 h1{ margin:4px 0 10px; font-size:26px; letter-spacing:.2px; }
 
+/* Controles */
 .controls{
-  display:grid; gap:10px; grid-template-columns: 1fr 220px 220px auto;
+  display:grid; gap:10px; grid-template-columns: 1fr 220px auto;
 }
 @media (max-width:900px){ .controls{ grid-template-columns:1fr; } }
 
 .controls input,.controls select{
-  width:100%; padding:10px 12px;
-  border-radius:12px; border:1px solid #ffffff;
+  width:100%; padding:12px 14px;
+  border-radius:14px; border:1px solid #ffffff;
   background:#ffffff; color: var(--text); outline:none;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
 }
 .controls input::placeholder{ color:#9a9a9a; }
 .controls button{
-  padding:10px 14px; border-radius:12px; border:1px solid #ffffff;
-  background:#ffffff; color: var(--accent); cursor:pointer; font-weight:600;
+  padding:12px 16px; border-radius:14px; border:1px solid #ffffff;
+  background:#ffffff; color: var(--accent); cursor:pointer; font-weight:700;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
 }
 .controls button:hover{ background:#f4efff; border-color:#f4efff; }
 
+/* Conteúdo */
 main .grid{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
   gap:16px;
   padding:18px 20px 28px;
 }
+#resultWrap{ padding: 6px 20px 0; color: var(--muted); }
 
+/* Cards */
 .card{
   background: var(--card);
   border:1px solid var(--border);
@@ -63,225 +70,192 @@ main .grid{
   padding:16px;
   box-shadow: 0 6px 22px rgba(20, 0, 60, .06);
 }
-
 .uf-pill{
   display:inline-block;
-  vertical-align:middle;
-  font-size:12px;
-  color:#fff;
-  background: var(--accent);
-  padding:3px 10px;
-  border-radius:999px;
-  margin-bottom:10px;
+  font-size:12px; color:#fff; background: var(--accent);
+  padding:3px 10px; border-radius:999px; margin-bottom:10px;
 }
-
 .empresa{ font-weight:800; font-size:18px; color: var(--text); }
 .sub{ color: var(--muted); font-size:13px; margin:4px 0 10px; }
 .area{ font-size:13px; color: var(--muted); margin-top:8px; }
 .area strong{ color: var(--text); }
 
+/* Ações */
 .actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
 .btn{
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  color:#fff;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:13px;
-  font-weight:700;
-  text-decoration:none;
+  background: var(--accent); border: 1px solid var(--accent);
+  color:#fff; padding:10px 14px; border-radius:12px;
+  font-size:13px; font-weight:700; text-decoration:none;
   transition: background .15s ease, transform .06s ease;
 }
 .btn:hover{ background: var(--accent-strong); transform: translateY(-1px); }
 
-footer{
-  color: var(--muted); font-size:12px; padding: 10px 20px 24px; text-align:center;
-}
-
+/* Rodapé / impressão */
+footer{ color: var(--muted); font-size:12px; padding: 10px 20px 24px; text-align:center; }
 @media print{
   header, .controls, footer{ display:none; }
   body{ background:#fff; color:#000; }
   .card{ break-inside: avoid; page-break-inside: avoid; }
 }
-#secao{ display:none !important; }
-.controls{ grid-template-columns: 1fr 220px auto !important; }
 </style>
 </head>
 <body>
+
 <header>
   <div class="wrap">
     <h1>Distribuidores · Bem Bolado</h1>
     <div class="controls">
-      <input id="q" type="search" placeholder="Buscar por nome, cidade, contato..." />
-      <select id="uf"></select>
-      <select id="secao"></select>
+      <input id="q" type="search" placeholder="Buscar por nome, cidade, contato...">
+      <select id="uf"><option value="">Todos os estados</option></select>
       <button id="btnPrint">Imprimir / Salvar PDF</button>
     </div>
   </div>
 </header>
+
+<div id="resultWrap"><div class="wrap"><span id="resultCount"></span></div></div>
+
 <main>
-  <div class="wrap">
-    <div id="resultCount" class="sub"></div>
+  <div id="grid" class="grid">
+    <div class="wrap" style="grid-column:1/-1; text-align:center; color:#888;">
+      Atualize os dados substituindo a planilha. Versão carrega automaticamente do Google Sheets.
+    </div>
   </div>
-  <div class="grid" id="grid"></div>
 </main>
-<footer>
-  Atualize os dados substituindo o arquivo JSON embutido neste HTML. Versão gerada automaticamente.
-</footer>
+
+<footer>© Bem Bolado</footer>
 
 <script>
-let DATA = []; 
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuyvyfHntOVoDyZe-xDOKeWTMb3hXGpnIoXk_tNozCAFNk94nbtvnxe-P60Mr5q4pyaewEhFoxHOqH/pub?output=csv";
+/* ========= CONFIG ========= */
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuyvyfHntOVoDyZe-xDOKeWTMb3hXGpnIoXk_tNozCAFNk94nbtvnxe-P6OMr5q4pyaewEhFoxHOqH/pub?output=csv
+"; //
 
-function parseCSV(text) {
-  const rows = [];
-  let cur = '', row = [], i = 0, inQuotes = false;
-  while (i < text.length) {
-    const c = text[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i+1] === '"') { cur += '"'; i++; } else { inQuotes = false; }
-      } else { cur += c; }
-    } else {
-      if (c === '"') inQuotes = true;
-      else if (c === ',') { row.push(cur); cur = ''; }
-      else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
-      else if (c !== '\r') { cur += c; }
+/* ========= UTIL ========= */
+const $q = document.getElementById("q");
+const $uf = document.getElementById("uf");
+const $grid = document.getElementById("grid");
+const $resultCount = document.getElementById("resultCount");
+document.getElementById("btnPrint").onclick = () => window.print();
+
+function onlyDigits(s){ return (s||"").replace(/\D+/g,""); }
+function telHref(v){ const d=onlyDigits(v); return d?`tel:${d}`:""; }
+
+function parseCSV(text){
+  const rows=[]; let cur='', row=[], i=0, inQ=false;
+  while(i<text.length){
+    const c=text[i];
+    if(inQ){
+      if(c=='"'){ if(text[i+1]=='"'){cur+='"'; i++;} else inQ=false; }
+      else cur+=c;
+    }else{
+      if(c=='"') inQ=true;
+      else if(c==','){ row.push(cur); cur=''; }
+      else if(c=='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+      else if(c!='\r'){ cur+=c; }
     }
     i++;
   }
-  if (cur.length>0 || row.length>0) { row.push(cur); rows.push(row); }
+  if(cur.length||row.length){ row.push(cur); rows.push(row); }
   return rows;
 }
-function csvToObjects(csvText) {
-  const rows = parseCSV(csvText);
-  if (!rows.length) return [];
-  const headers = rows[0].map(h => (h||'').trim());
-  return rows.slice(1).filter(r => r.some(x => (x||'').trim() !== '')).map(r => {
-    const obj = {};
-    headers.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
-    return obj;
+function csvToObjects(csv){
+  const rows=parseCSV(csv); if(!rows.length) return [];
+  const head=rows[0].map(h=>(h||'').trim());
+  return rows.slice(1).filter(r=>r.some(x=>(x||'').trim()!=='')).map(r=>{
+    const o={}; head.forEach((h,i)=>o[h]=(r[i]||'').trim()); return o;
   });
 }
-async function loadCSV() {
-  try {
+
+/* ========= DATA CARREGAMENTO ========= */
+let DATA = [];
+
+async function loadCSV(){
+  try{
     const res = await fetch(CSV_URL);
-    if (!res.ok) throw new Error("Falha ao buscar CSV ("+res.status+")");
+    if(!res.ok) throw new Error("Erro "+res.status);
     const text = await res.text();
     const rows = csvToObjects(text);
-    // Normaliza campos esperados pelo site
-    DATA = rows.map(r => ({rebuildUFOptions();
-render();
+
+    DATA = rows.map(r => ({
       UF: r.UF || "",
-      SECAO: r.SECAO || r["SEÇÃO"] || "",
       REPRESENTANTE: r.REPRESENTANTE || "",
       NOME: r.NOME || "",
       TELEFONE: r.TELEFONE || "",
       WHATSAPP: r.WHATSAPP || "",
       EMAIL: r.EMAIL || r["E-MAIL"] || "",
       INSTAGRAM: r.INSTAGRAM || "",
+      CIDADE: r.CIDADE || "",
       AREA_ATENDIMENTO: r.AREA_ATENDIMENTO || r["AREA DE ATENDIMENTO"] || ""
     }));
-    rebuildSecaoOptions();
+
+    rebuildUFOptions();
     render();
-  } catch (e) {
+  }catch(e){
     console.error(e);
-    document.getElementById("grid").innerHTML =
-      "<div class='sub'>Erro ao carregar dados do Google Sheets. Verifique o link CSV.</div>";
+    $grid.innerHTML = "<div class='wrap' style='grid-column:1/-1; text-align:center; color:#888;'>Erro ao carregar a planilha. Confira o link CSV.</div>";
   }
 }
-// dispara o carregamento assim que a página abre
-loadCSV();
 
-function onlyDigits(s) {
-  return (s||"").replace(/\D+/g, "");
-}
-function splitMulti(s) {
-  if (!s) return [];
-  return String(s).split(/\s*[\/|,;]\s*/).map(x => x.trim()).filter(Boolean);
-}
-function unique(arr) { return [...new Set(arr)]; }
-
-const $q = document.getElementById("q");
-const $uf = document.getElementById("uf");
-const $secao = document.getElementById("secao");
-const $grid = document.getElementById("grid");
-const $resultCount = document.getElementById("resultCount");
-document.getElementById("btnPrint").onclick = () => window.print();
-
-// Build UF options
-const allUFs = unique(DATA.map(r => r.UF).filter(Boolean)).sort();
-$uf.innerHTML = '<option value="">Todos os estados</option>' + allUFs.map(uf => `<option value="${uf}">${uf}</option>`).join("");
-
-// Build UF options (apenas estados)
+/* ========= FILTROS ========= */
 function rebuildUFOptions(){
-  const ufs = [...new Set((DATA||[])
-    .map(r => (r.UF||"").trim())
-    .filter(Boolean)
-  )].sort();
-
-  $uf.innerHTML =
-    '<option value="">Todos os estados</option>' +
+  const ufs = [...new Set(DATA.map(r => (r.UF||"").trim()).filter(Boolean))].sort();
+  $uf.innerHTML = '<option value="">Todos os estados</option>' +
     ufs.map(uf => `<option value="${uf}">${uf}</option>`).join('');
 }
-
 $uf.onchange = () => render();
 $q.oninput = () => render();
 
-function buildCard(r) {
-  const empresa = r.REPRESENTANTE || r.NOME || "(sem nome)";
-  const cidade = r.CIDADE || "";
-  const contato = r.NOME || "";
-  const telList = splitMulti(r.TELEFONE);
-  const whatsList = splitMulti(r.WHATSAPP);
-  const email = (r.EMAIL || "").trim();
-  const insta = (r.INSTAGRAM || "").trim();
-  const area = (r.AREA_ATENDIMENTO || "").trim();
+/* ========= RENDER ========= */
+function matchText(r, q){
+  if(!q) return true;
+  const hay = [
+    r.UF, r.REPRESENTANTE, r.NOME, r.CIDADE, r.AREA_ATENDIMENTO, r.EMAIL, r.WHATSAPP, r.TELEFONE, r.INSTAGRAM
+  ].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
 
-  const btns = [];
-  telList.forEach(t => {
-    const d = onlyDigits(t);
-    if (d) btns.push(`<a class="btn" href="tel:${d}">Ligar ${t}</a>`);
-  });
-  whatsList.forEach(w => {
-    const d = onlyDigits(w);
-    if (d) btns.push(`<a class="btn" target="_blank" href="https://wa.me/55${d}">WhatsApp</a>`);
-  });
-  if (email) btns.push(`<a class="btn" href="mailto:${email}">E-mail</a>`);
-  if (insta) {
-    const url = insta.startsWith("http") ? insta : `https://instagram.com/${insta.replace(/^@/,"")}`;
-    btns.push(`<a class="btn" target="_blank" href="${url}">Instagram</a>`);
-  }
+function buildCard(r){
+  const empresa = r.REPRESENTANTE || r.NOME || "(sem nome)";
+  const contato = r.NOME ? `Contato: ${r.NOME}` : (r.REPRESENTANTE ? `Contato: ${r.REPRESENTANTE}` : "");
+  const area = r.AREA_ATENDIMENTO ? `Área de atendimento: <strong>${r.AREA_ATENDIMENTO}</strong>` : "";
+
+  const fone = r.WHATSAPP || r.TELEFONE || "";
+  const hrefTel = telHref(fone);
+  const btnTel = hrefTel ? `<a class="btn" href="${hrefTel}">Ligar ${fone ? `(${fone})`: ""}</a>` : "";
+
+  const btnMail = r.EMAIL ? `<a class="btn" href="mailto:${r.EMAIL}">E-mail</a>` : "";
+  const ig = (r.INSTAGRAM||"").replace(/^@/,"");
+  const btnIG = ig ? `<a class="btn" href="https://instagram.com/${ig}" target="_blank" rel="noopener">Instagram</a>` : "";
 
   return `
     <div class="card">
-      <div class="uf-pill">${r.UF}</div>
+      <div class="uf-pill">${r.UF || "--"}</div>
       <div class="empresa">${empresa}</div>
-      <div class="sub">${contato ? "Contato: "+contato+" · " : ""}${cidade || ""}${r.SECAO ? " · "+r.SECAO : ""}</div>
-      ${ area ? `<div class="area"><strong>Área de atendimento:</strong> ${area}</div>` : "" }
-      <div class="actions">${btns.join(" ")}</div>
+      <div class="sub">${contato || ""}</div>
+      <div class="area">${area}</div>
+      <div class="actions">${btnTel}${btnMail}${btnIG}</div>
     </div>
   `;
 }
 
-function render() {
-  const uf = $uf.value.trim();
-  const secao = $secao.value.trim();
-  const q = ($q.value || "").toLowerCase();
+function render(){
+  const q = $q.value.trim();
+  const ufSel = $uf.value || "";
 
-  let rows = DATA.filter(r => (!uf || r.UF===uf) && (!secao || (r.SECAO||"")===secao));
-  if (q) {
-    rows = rows.filter(r => {
-      const blob = (r.REPRESENTANTE + " " + r.NOME + " " + (r.CIDADE||"") + " " + (r.EMAIL||"") + " " + (r.INSTAGRAM||"") + " " + (r.AREA_ATENDIMENTO||"")).toLowerCase();
-      return blob.includes(q);
-    });
+  const list = DATA
+    .filter(r => (!ufSel || r.UF === ufSel) && matchText(r, q));
+
+  $resultCount.textContent = `${list.length} resultado${list.length===1?"":"s"}`;
+
+  if(!list.length){
+    $grid.innerHTML = `<div class="wrap" style="grid-column:1/-1; text-align:center; color:#888;">Nenhum distribuidor encontrado.</div>`;
+    return;
   }
-  $resultCount.textContent = rows.length + " resultado" + (rows.length===1 ? "" : "s");
-  $grid.innerHTML = rows.map(buildCard).join("");
+
+  $grid.innerHTML = list.map(buildCard).join("");
 }
 
-rebuildSecaoOptions();
-render();
+/* start */
+loadCSV();
 </script>
 </body>
 </html>
