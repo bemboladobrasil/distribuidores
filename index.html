@@ -103,6 +103,8 @@ footer{
   body{ background:#fff; color:#000; }
   .card{ break-inside: avoid; page-break-inside: avoid; }
 }
+#secao{ display:none !important; }
+.controls{ grid-template-columns: 1fr 220px auto !important; }
 </style>
 </head>
 <body>
@@ -168,7 +170,8 @@ async function loadCSV() {
     const text = await res.text();
     const rows = csvToObjects(text);
     // Normaliza campos esperados pelo site
-    DATA = rows.map(r => ({
+    DATA = rows.map(r => ({rebuildUFOptions();
+render();
       UF: r.UF || "",
       SECAO: r.SECAO || r["SEÇÃO"] || "",
       REPRESENTANTE: r.REPRESENTANTE || "",
@@ -210,14 +213,19 @@ document.getElementById("btnPrint").onclick = () => window.print();
 const allUFs = unique(DATA.map(r => r.UF).filter(Boolean)).sort();
 $uf.innerHTML = '<option value="">Todos os estados</option>' + allUFs.map(uf => `<option value="${uf}">${uf}</option>`).join("");
 
-// Build Seção options (depends on UF)
-function rebuildSecaoOptions() {
-  const uf = $uf.value;
-  const secoes = unique(DATA.filter(r => !uf || r.UF===uf).map(r => r.SECAO || "").filter(Boolean)).sort();
-  $secao.innerHTML = '<option value="">Todas as seções</option>' + secoes.map(s => `<option>${s}</option>`).join("");
+// Build UF options (apenas estados)
+function rebuildUFOptions(){
+  const ufs = [...new Set((DATA||[])
+    .map(r => (r.UF||"").trim())
+    .filter(Boolean)
+  )].sort();
+
+  $uf.innerHTML =
+    '<option value="">Todos os estados</option>' +
+    ufs.map(uf => `<option value="${uf}">${uf}</option>`).join('');
 }
-$uf.onchange = () => { rebuildSecaoOptions(); render(); };
-$secao.onchange = () => render();
+
+$uf.onchange = () => render();
 $q.oninput = () => render();
 
 function buildCard(r) {
